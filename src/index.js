@@ -10,8 +10,8 @@ const port = process.env.PORT;
 instanceMongoDB.connect();
 app.use(express.json());
 app.use(cookieParser());
-app.use(errorHandler);
 router(app);
+app.use(errorHandler);
 app.get('/', (req, res) => {
     res.send("Nguyen Huu Nhat Huy");
 })

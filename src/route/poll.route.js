@@ -4,6 +4,7 @@ export default class PollRoute {
     constructor()
     {
         this.router = Router();
+        this.setupRoutes();
     }
     setupRoutes()
     {
