@@ -1,81 +1,45 @@
-import User from "../models/user.model.js"
-
 class UserValidator {
-  checkUserValidate = async (req, res, next) => {
-    const user = req.body;
-    // validate name
-    if (user)
-    {
-      if (!user.name) {
-        console.log("Name is required");
-        res.status(400).send({ status: false, message: "Name is required" });
-        return;
-      }   
-      else
-      {
-        if (user.name.trim().length < 10) {
-          res.status(400).send({ status: false, message: "Name must be at least 10 characters" });
-          return;
-        }
+  constructor() {}
+  checkField = async (req, res, next) => {
+    try {
+      const user = req.body;
+      if (
+        !user.name ||
+        !user.age ||
+        !user.email ||
+        !user.username ||
+        !user.password
+      ) {
+        throw new BadRequestError("Nhập thiếu thông tin!");
       }
+      // validate name
+      if (user.name.trim().length < 10) {
+        throw new BadRequestError("Name must be at least 10 characters");
+      }
+      // validate age
+      const age = parseInt(user.age);
+      if (isNaN(age) || age <= 0 || age > 100) {
+        throw new BadRequestError("Age is invalid");
+      }
+      // validate email (regex and duplicate email)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const checkEmail = emailRegex.test(user.email);
+      if (!checkEmail) {
+        throw new BadRequestError("Email is invalid");
+      }
+      // validate username (length and duplicate)
+      if (user.username.trim().length < 5) {
+        throw new BadRequestError("Username must be at least 5 characters");
+      }
+      // validate password (minlength = 5)
+      if (user.password.trim().length < 5) {
+        throw new BadRequestError("Password must be at least 5 characters");
+      }
+      next();
+    } catch (error) {
+      next(error);
     }
-    // validate email
-    if (user)
-    {
-      let id = "";
-      if (user.email) {
-        if (req.params.id)
-        {
-          id = req.params.id;
-        }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const checkEmail = emailRegex.test(user.email);
-        if (!checkEmail) {
-          res.status(400).send({ status: false, message: "Email is invalid" });
-          return;
-        }
-        if (id !== "")
-        {
-          const existingUser = await User.findOne({
-            email: user.email,
-            _id: { $ne: id }
-          });
-          if (existingUser) {
-            res.status(400).send({ status: false, message: "Email already exists" });
-            return;
-          }
-        }
-        else
-        {
-          const existingUser = await User.findOne({email: user.email});
-          if (existingUser) {
-            res.status(400).send({ status: false, message: "Email already exists" });
-            return;
-          }
-        }
-      }
-      else {
-        res.status(400).send({ status: false, message: "Email is required" });
-        return;
-      }
-    }
-    // validate age
-    if (user)
-    {
-      if (user.age) {
-        const age = parseInt(user.age);
-          if (isNaN(age) || age <= 0 || age > 100) {
-            res.status(400).send({ status: false, message: "Age is invalid" });
-            return;
-          }
-      }
-      else {
-        res.status(400).send({ status: false, message: "Age is required" });
-        return;
-      }
-    }
-    next();
-  }
+  };
 }
 
 export default UserValidator;
