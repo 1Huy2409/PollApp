@@ -1,5 +1,5 @@
 import mongoose, { mongo } from "mongoose";
-
+import { optionSchema } from "./option.model.js";
 const pollSchema = new mongoose.Schema({
     title: {
         type: String, 
@@ -9,16 +9,16 @@ const pollSchema = new mongoose.Schema({
     description: {
         type: String,
     },
-    options: Array,
+    options: [optionSchema],
     creator: Object,
     // status locked poll
     isLocked: {
         type: Boolean, 
-        require: true
+        default: false
     },
     totalVotes: {
         type: Number,
-        require: true
+        default: 0
     }
 },
 {

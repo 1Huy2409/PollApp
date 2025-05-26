@@ -1,24 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
-const optionSchema = new mongoose.Schema({
+export const optionSchema = new mongoose.Schema({
+    _id: {type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId()},
     text: {
         type: String,
         require: true
     },
     votes: {
-        type: Number, 
-        require: true,
+        type: Number,
         default: 0
     },
-    userVotes: Array, // lưu mảng các object id và username của người vote,
-    pollID: {
-        type: Number,
-        require: true
+    userVotes: {
+        type: Array,
+        default: []
     }
-},
-{
-    timestamps: true
 })
-
-const Option = mongoose.Model("options", optionSchema);
-export default Option;

@@ -68,14 +68,46 @@ export default class AuthValidator {
         }
     }
     checkAuth = async (req, res, next) => {
-        const bearerToken = req.headers['authorization'];
-        if (!bearerToken) {
-            throw new AuthFailureError("You 're not authenticated!");
+        try
+        {
+            const bearerToken = req.headers['authorization'];
+            if (!bearerToken) {
+                throw new AuthFailureError("You 're not authenticated!");
+            }
+            const token = bearerToken.split(' ')[1];
+            // const decode = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+            try
+            {
+                var decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);
+                req.user = decoded;
+                next();
+            }
+            catch(err)
+            {
+                throw err;
+            }
         }
-        const token = bearerToken.split(' ')[1];
-        const decode = jwt.verify(token, process.env.JWT_ACCESS_KEY);
-        req.user = decode;
-        next();
+        catch (error)
+        {
+            next(error);
+        }
     }
     // authorization here
+    checkAdmin = async (req, res, next) => {
+        try
+        {
+            if (req.user.role == "Admin")
+            {
+                next();
+            }
+            else
+            {
+                throw new AuthFailureError("You 're not allowed to do that!");
+            }
+        }
+        catch (error)
+        {
+            next(error);
+        }
+    }
 }

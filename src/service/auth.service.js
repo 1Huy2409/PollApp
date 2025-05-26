@@ -41,7 +41,7 @@ export default class AuthService {
     loginService = async (data) => {
         // find user by username in database
         const user = await this.userModel.findOne({username: data.username});
-        const { id, username } = user;
+        const { id, username, role } = user;
         if (user)
         {
             // compare password
@@ -52,8 +52,8 @@ export default class AuthService {
             }
             else {
                 // init accesstoken and refreshtoken => push refreshtoken to array  
-                const accessToken = this.authUtil.signAccessToken({id, username});
-                const refreshToken = this.authUtil.signRefreshToken({id, username});
+                const accessToken = this.authUtil.signAccessToken({id, username, role});
+                const refreshToken = this.authUtil.signRefreshToken({id, username, role});
                 return {
                     data: {
                         accessToken: accessToken, 
@@ -72,8 +72,8 @@ export default class AuthService {
         if (refreshToken)
         {
             // this token is not expired => sign new accessToken and refreshToken
-            const { id, username } = this.authUtil.verifyRefreshToken(refreshToken);
-            const newPayload = {id, username};
+            const { id, username, role } = this.authUtil.verifyRefreshToken(refreshToken);
+            const newPayload = {id, username, role};
             const newAccessToken = this.authUtil.signAccessToken(newPayload);
             const newRefreshToken = this.authUtil.signRefreshToken(newPayload);
             return {
