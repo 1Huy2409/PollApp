@@ -6,9 +6,14 @@ export default class PollService {
         this.pollModel = Poll;
         this.voteModel = Vote;
     }
-    getAllPolls = async () => {
-        const polls = await this.pollModel.find({});
-        return polls;
+    getAllPolls = async (req) => {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 2;
+
+        const skip = (page - 1) * limit;
+        const total = await this.pollModel.countDocuments();
+        const polls = await this.pollModel.find({isLocked: false}).skip(skip).limit(limit);
+        return {polls, total, page, limit};
     }
     getPollById = async (id) => {
         const poll = await this.pollModel.findOne({_id: id});
@@ -54,6 +59,7 @@ export default class PollService {
             throw new NotFoundError("Poll not found!");
         }
         await this.pollModel.deleteOne({_id: id});
+        await this.voteModel.deleteOne({pollId: id});
         return poll;
     }
     votePoll = async (voteInfo) => {

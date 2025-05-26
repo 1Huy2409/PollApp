@@ -16,9 +16,9 @@ export default class PollRoute {
     setupRoutes()
     {
         // [GET] get all polls (admin & user)
-        this.router.get('/', asyncHandler(this.pollController.getAllPolls))
+        this.router.get('/',asyncHandler(this.authValidator.checkAuth), asyncHandler(this.pollController.getAllPolls))
         // [GET] get poll by id (admin & user)
-        this.router.get('/:id', asyncHandler(this.pollController.getPollById));
+        this.router.get('/:id',asyncHandler(this.authValidator.checkAuth), asyncHandler(this.pollController.getPollById));
         // [POST] add new poll (admin)
         this.router.post('/',asyncHandler(this.authValidator.checkAuth), asyncHandler(this.authValidator.checkAdmin), asyncHandler(this.pollController.addPoll));
         // [PUT] update poll (admin)

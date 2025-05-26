@@ -1,5 +1,6 @@
 import { Router } from "express";
 import User from "../model/user.model.js";
+import Vote from "../model/vote.model.js";
 import UserService from "../service/user.service.js";
 import UserController from "../controller/user.controller.js";
 import AuthUtil from "../utils/auth.util.js";
@@ -10,7 +11,7 @@ export default class UserRouter {
     constructor()
     {
         this.router = Router();
-        this.userController = new UserController(new UserService(User, new AuthUtil()));
+        this.userController = new UserController(new UserService(User, new AuthUtil(), Vote));
         this.userValidator = new UserValidator();
         this.authValidator = new AuthValidator();
         this.setupRoutes();

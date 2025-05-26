@@ -1,9 +1,10 @@
 import { NotFoundError, ConflictRequestError } from "../handler/error.response.js";
 
 class UserService {
-    constructor(User, AuthUil) {
+    constructor(User, AuthUil, Vote) {
         this.userModel = User;
         this.authUtil = AuthUil;
+        this.voteModel = Vote;
     }
     getAllUsers = async () => {
         const users = await this.userModel.find({});
@@ -79,6 +80,7 @@ class UserService {
             throw new NotFoundError("User not found!");
         }
         await this.userModel.deleteOne({_id: id});
+        await this.voteModel.deleteOne({userId: id});
         return user;
     }
     getMe = async (id) => {

@@ -6,10 +6,15 @@ export default class PollController {
     getAllPolls = async (req, res, next) => {
         try
         {
-            const polls = await this.pollService.getAllPolls();
+            const {polls, total, page, limit} = await this.pollService.getAllPolls(req);
             new OK({
                 message: "Get all polls successfully!",
-                metadata: polls
+                metadata: {
+                    polls: polls,
+                    total: total,
+                    page: page,
+                    limit: limit
+                }
             }).send(res);
         }
         catch(error)
