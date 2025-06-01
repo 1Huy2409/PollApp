@@ -94,20 +94,51 @@ export default class AuthValidator {
     }
     // authorization here
     checkAdmin = async (req, res, next) => {
-        try
-        {
-            if (req.user.role == "Admin")
-            {
-                next();
+        this.checkAuth(req, res, async (err) => {
+            if (err) return next(err);
+            try {
+                if (req.user.role == "Admin")
+                {
+                    next();
+                }
+                else
+                {
+                    throw new AuthFailureError("You 're not allowed to do that!");
+                }
             }
-            else
+            catch (error)
             {
-                throw new AuthFailureError("You 're not allowed to do that!");
+                next(error);
             }
-        }
-        catch (error)
-        {
-            next(error);
-        }
+        })
+    }
+    checkUpdateProfile = async (req, res, next) => {
+        this.checkAuth(req, res, async (err) => {
+            if (err) return next(err);
+            // check role == "Admin" || id = req.params.id
+            try
+            {
+                const id = req.params.id;
+                if (req.user.role == "Admin")
+                {
+                    next();
+                }                
+                else
+                {
+                    if (id == req.user.id)
+                    {
+                        next();
+                    }
+                    else
+                    {
+                        throw new AuthFailureError("You're not allowed to do that!");
+                    }
+                }
+            }
+            catch (error)
+            {
+                next(error);
+            }
+        })
     }
 }

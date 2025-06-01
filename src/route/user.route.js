@@ -28,8 +28,8 @@ export default class UserRouter {
         this.router.delete('/:id', asyncHandler(this.userController.deleteUser));
         // [GET] get user by id
         this.router.get('/:id', asyncHandler(this.userController.getUserById));
-        // [PUT] update user by id (Admin)
-        this.router.put('/:id', asyncHandler(this.userValidator.checkField), asyncHandler(this.userController.putUser));
+        // [PUT] update user by id (Admin || User with same id)
+        this.router.put('/:id', asyncHandler(this.authValidator.checkUpdateProfile) ,asyncHandler(this.userValidator.checkField), asyncHandler(this.userController.putUser));
     }
     getRoute()
     {
