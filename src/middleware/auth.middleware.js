@@ -75,7 +75,6 @@ export default class AuthValidator {
                 throw new AuthFailureError("You 're not authenticated!");
             }
             const token = bearerToken.split(' ')[1];
-            // const decode = jwt.verify(token, process.env.JWT_ACCESS_KEY);
             try
             {
                 var decoded = jwt.verify(token, process.env.JWT_ACCESS_KEY);

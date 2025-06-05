@@ -39,12 +39,18 @@ export default class PollService {
         const poll = await this.pollModel.findOne({_id: id});
         if (poll)
         {
-            await this.pollModel.updateOne({_id: id}, {
-                title: data.title,
-                description: data.description,
-                options: data.options,
-                isLocked: data.isLocked,
-            })
+            const oldOptions = poll.options;
+            const newOptions = data.options.map(opt => opt.text);
+            const deleteOptions = oldOptions.filter(opt => !newOptions.includes(opt.text));
+            const deleteOptionIds = deleteOptions.map(opt => opt.id);
+            const countDeleteVotes = deleteOptions.reduce((sum, opt) => sum + opt.votes, 0);
+            await this.voteModel.deleteMany({pollId: id}, {optionId: {$in: deleteOptionIds}});
+            poll.title = data.title;
+            poll.description = data.description;
+            poll.options = data.options;
+            poll.isLocked = data.isLocked;
+            poll.totalVotes -= countDeleteVotes;
+            await poll.save();
             return poll;
         }
         else
@@ -117,25 +123,7 @@ export default class PollService {
             await newVote.save();
             poll.totalVotes += 1;
         }
-        // check user voted or not?
-        // const userCheck = {id, username};
-        // const existingVote = optionExisting.userVotes.find(item => item.id == userCheck.id && item.username == userCheck.username);
-        // if (existingVote)
-        // {
-        //     // unvote
-        //     optionExisting.votes -= 1;
-        //     optionExisting.userVotes = optionExisting.userVotes.map(item => item.id != userCheck.id);
-        //     poll.totalVotes -= 1;
-        // }
-        // else
-        // {
-        //     // vote
-        //     optionExisting.votes += 1;
-        //     optionExisting.userVotes.push({id: userCheck.id, username: userCheck.username});
-        //     poll.totalVotes += 1;
-        // }
         await poll.save();
-        // return poll;
     }
     addOption = async (data) => {
         const {text, pollId} = data;
@@ -160,7 +148,10 @@ export default class PollService {
         {
             throw new NotFoundError("Option not found!");
         }
+        const deleteVotes = optionExisting.votes;
         poll.options.pull({_id: data.optionId})
+        poll.totalVotes -= deleteVotes;
+        await this.voteModel.deleteOne({pollId: data.pollId, optionId: data.optionId});
         await poll.save();
     }
 }

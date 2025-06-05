@@ -60,13 +60,12 @@ class UserService {
             }
             const hashedPassword = await this.authUtil.hashPassword(data.password);
             // cập nhật lại thông tin cho user
-            await this.userModel.updateOne({_id: id}, {
-                name: data.name, 
-                age: data.age,
-                email: data.email,
-                username: data.username,
-                password: hashedPassword
-            })
+            user.name = data.name;
+            user.age = data.age;
+            user.email = data.email;
+            user.username = data.username;
+            user.password = hashedPassword;
+            await user.save();
             return user;
         }
         else {

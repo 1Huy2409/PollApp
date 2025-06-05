@@ -48,7 +48,7 @@ export default class AuthService {
             const check = await this.authUtil.comparePassword(data.password, user.password);
             if (!check)
             {
-                throw new BadRequestError("Password is incorrect!");
+                throw new AuthFailureError("Password is incorrect!");
             }
             else {
                 // init accesstoken and refreshtoken => push refreshtoken to array  
@@ -85,42 +85,4 @@ export default class AuthService {
             throw new AuthFailureError("Refresh token not found!");
         }
     }
-    // forgotPasswordService = async (email) => {
-    //     const user = await this.userModel.findOne({email: email});
-    //     if (!user)
-    //     {
-    //         throw new NotFoundError("Email not found!");
-    //     }
-    //     // email exist => create random token 
-    //     const token = randomToken();
-    //     const expires = new Date(Date.now() + 10 * 60 * 1000);
-    //     user.passwordResetToken = token;
-    //     user.passwordResetExpiration = expires;
-    //     await user.save();
-        
-    //     // call send mail 
-    //     // emailFrom, emailTo, emailSubject, emailText
-    //     const objectMail = {
-    //         emailFrom: process.env.SMTP_USER,
-    //         emailTo: email,
-    //         emailSubject: "RESET PASSWORD",
-    //         emailText: token
-    //     }
-    //     console.log(objectMail);
-    //     try {
-    //         await mailService.sendEmail(objectMail);
-    //         return {
-    //             success: true,
-    //             message: "Send mail successfully!"
-    //         }
-    //     }
-    //     catch (error)
-    //     {
-    //         console.error("Mail error:", error);
-    //         return {
-    //             success: false,
-    //             errMessage: error.message
-    //         }
-    //     }
-    // }
 }

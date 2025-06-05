@@ -6,6 +6,10 @@ export default class PollValidator {
     {
         try {
             const data = req.body;
+            if (!data.title || !data.description || !data.options)
+            {
+                throw new BadRequestError("Please fill in all information!")
+            }
             if (data.title.trim().length < 10)
             {
                 throw new BadRequestError("Title must be at least 10 characters!");
@@ -30,11 +34,16 @@ export default class PollValidator {
         try
         {
             const data = req.body;
-            if (data.title.trim().length < 10)
+            console.log(data)
+            if (!data.title || !data.description || !data.options || typeof data.isLocked !== "boolean")
+            {
+                throw new BadRequestError("Please fill in all information!")
+            }
+            if (data.title.trim().length < 5)
             {
                 throw new BadRequestError("Title must be at least 10 characters!");
             }
-            if (data.description.trim().length < 10)
+            if (data.description.trim().length < 5)
             {
                 throw new BadRequestError("Description must be at least 10 characters!");
             }
@@ -61,6 +70,7 @@ export default class PollValidator {
             {
                 throw new BadRequestError("Text option be required!");
             }
+            next();
         }
         catch (error)
         {

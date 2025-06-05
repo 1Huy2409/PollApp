@@ -23,11 +23,11 @@ export default class UserRouter {
         // [GET] get profile (Admin and User)
         this.router.get('/me', asyncHandler(this.authValidator.checkAuth), asyncHandler(this.userController.getMe));
         // [POST] create new user (Admin)
-        this.router.post('/', asyncHandler(this.userValidator.checkField) ,asyncHandler(this.userController.addUser));
+        this.router.post('/', asyncHandler(this.authValidator.checkAdmin), asyncHandler(this.userValidator.checkField) ,asyncHandler(this.userController.addUser));
         // [DELETE] delete user by id (Admin)
-        this.router.delete('/:id', asyncHandler(this.userController.deleteUser));
+        this.router.delete('/:id', asyncHandler(this.authValidator.checkAdmin), asyncHandler(this.userController.deleteUser));
         // [GET] get user by id
-        this.router.get('/:id', asyncHandler(this.userController.getUserById));
+        this.router.get('/:id', asyncHandler(this.authValidator.checkAdmin), asyncHandler(this.userController.getUserById));
         // [PUT] update user by id (Admin || User with same id)
         this.router.put('/:id', asyncHandler(this.authValidator.checkUpdateProfile) ,asyncHandler(this.userValidator.checkField), asyncHandler(this.userController.putUser));
     }

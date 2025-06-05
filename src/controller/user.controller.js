@@ -44,7 +44,7 @@ export default class UserController {
       const user = req.body;
       const updatedUser = await this.userService.putUser(id, user);
       new OK({
-        message: "Put user successfully!",
+        message: "Updated user successfully!",
         metadata: updatedUser,
       }).send(res);
     } catch (error) {
@@ -68,7 +68,7 @@ export default class UserController {
     try {
       const user = await this.userService.getMe(id);
       new OK({
-        message: "Get me successfully!",
+        message: "Get your account in4 successfully!",
         metadata: user,
       }).send(res);
     } catch (error) {

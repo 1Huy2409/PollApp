@@ -23,10 +23,6 @@ export default class AuthRoute{
         this.router.post('/processNewToken', asyncHandler(this.authController.refreshTokenController));
         // [POST] /logout
         this.router.post('/logout',asyncHandler(this.authValidator.checkAuth), asyncHandler(this.authController.logoutController));
-        // [POST] /forgot-password
-        // this.router.post('/forgot-password', asyncHandler(this.authController.forgotPasswordController));
-        // [POST] /reset-password
-        // this.router.post('/reset-password', asyncHandler(this.authController.resetPasswordController));
     }
     getRoute()
     {
