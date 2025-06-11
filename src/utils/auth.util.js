@@ -17,7 +17,7 @@ export default class AuthUtil {
   signAccessToken = (data) => {
     const token = jwt.sign(data, process.env.JWT_ACCESS_KEY, {
       algorithm: "HS256",
-      expiresIn: "30m",
+      expiresIn: process.env.JWT_EXPIRE_TIME,
     });
     return token;
   };

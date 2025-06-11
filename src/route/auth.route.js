@@ -16,13 +16,13 @@ export default class AuthRoute{
     setupRoutes()
     {
         // [POST] /register
-        this.router.post('/register', asyncHandler(this.authValidator.registerValidate), asyncHandler(this.authController.registerController));
+        this.router.post('/register', asyncHandler(this.authValidator.registerValidate), asyncHandler(this.authController.register));
         // [POST] /login
-        this.router.post('/login', asyncHandler(this.authValidator.loginValidate), asyncHandler(this.authController.loginController));
+        this.router.post('/login', asyncHandler(this.authValidator.loginValidate), asyncHandler(this.authController.login));
         // [POST] /processNewToken
-        this.router.post('/processNewToken', asyncHandler(this.authController.refreshTokenController));
+        this.router.post('/processNewToken', asyncHandler(this.authController.refreshToken));
         // [POST] /logout
-        this.router.post('/logout',asyncHandler(this.authValidator.checkAuth), asyncHandler(this.authController.logoutController));
+        this.router.post('/logout',asyncHandler(this.authValidator.checkAuth), asyncHandler(this.authController.logout));
     }
     getRoute()
     {

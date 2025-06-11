@@ -111,6 +111,7 @@ export default class AuthValidator {
             }
         })
     }
+    
     checkUpdateProfile = async (req, res, next) => {
         this.checkAuth(req, res, async (err) => {
             if (err) return next(err);

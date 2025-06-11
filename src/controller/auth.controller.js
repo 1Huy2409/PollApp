@@ -7,7 +7,7 @@ export default class AuthController {
         this.authService = AuthService
     }
     // auth register controller
-    registerController = async (req, res, next) => {
+    register = async (req, res, next) => {
         try {
             const data = {
                 name: req.body.name, 
@@ -16,7 +16,7 @@ export default class AuthController {
                 username: req.body.username,
                 password: req.body.password,
             }
-            const newUser = await this.authService.registerService(data); //user return ve khong chua password
+            const newUser = await this.authService.register(data); //user return ve khong chua password
             new OK({
                 message: "Register successfully! Please login!",
                 metadata: {
@@ -30,13 +30,13 @@ export default class AuthController {
         }
     }
     // auth login controller
-    loginController = async (req, res, next) => {
+    login = async (req, res, next) => {
         try {
             const credential = {
                 username: req.body.username,
                 password: req.body.password
             }
-            const {data, msg} = await this.authService.loginService(credential);
+            const {data, msg} = await this.authService.login(credential);
             const { accessToken, refreshToken } = data;
             // store refreshToken in http only cookies
             res.cookie('refreshToken', refreshToken, {
@@ -58,10 +58,10 @@ export default class AuthController {
         }
     }
     // auth refreshToken controller
-    refreshTokenController = async (req, res, next) => {
+    refreshToken = async (req, res, next) => {
         try {
             // check data then return http status code
-            const {data, msg} = await this.authService.refreshTokenService(req);
+            const {data, msg} = await this.authService.refreshToken(req);
             if (data != null)
                 {
                 const { accessToken, refreshToken } = data;
@@ -86,7 +86,7 @@ export default class AuthController {
         }   
     }
     // auth logout controller
-    logoutController = async (req, res, next) => {
+    logout = async (req, res, next) => {
         try {
             const refreshToken = req.cookies.refreshToken;
             if (refreshToken) {

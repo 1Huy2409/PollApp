@@ -23,6 +23,7 @@ export default class PollService {
         }
         return poll;
     }
+
     addPoll = async (poll) => {
         const newPoll = new this.pollModel(
             {
@@ -66,8 +67,10 @@ export default class PollService {
         }
         await this.pollModel.deleteOne({_id: id});
         await this.voteModel.deleteOne({pollId: id});
+
         return poll;
     }
+
     votePoll = async (voteInfo) => {
         const {id, username, pollId, optionId} = voteInfo;
         const poll = await this.pollModel.findOne({_id: pollId});

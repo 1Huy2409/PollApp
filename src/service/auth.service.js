@@ -6,7 +6,7 @@ export default class AuthService {
         this.userModel = User;
         this.authUtil = AuthUtil;
     }
-    registerService = async (data) => {
+    register = async (data) => {
         // check email exist
         const existingEmail = await this.userModel.findOne({email: data.email});
         if (existingEmail)
@@ -38,7 +38,7 @@ export default class AuthService {
         }
         return user;
     }
-    loginService = async (data) => {
+    login = async (data) => {
         // find user by username in database
         const user = await this.userModel.findOne({username: data.username});
         const { id, username, role } = user;
@@ -67,7 +67,7 @@ export default class AuthService {
             throw new NotFoundError("Username not found!");
         }
     }
-    refreshTokenService = async (req) => {
+    refreshToken = async (req) => {
         const refreshToken = req.cookies.refreshToken;
         if (refreshToken)
         {
